@@ -28,10 +28,11 @@ class Game
         return true
       end
     end
+    return false
   end
 
   def is_a_tie?
-    !@board.include?(nil)
+    !@board.include?(" ")
   end
 
   def print_board
@@ -49,30 +50,68 @@ class Game
   end
 
   def number_or_nil(s)
-    num = s.to_i
-    if num.to_s == s
-      num
-    else
-      nil
+    s = s.chomp
+    if s =~ /\A-?\d+\z/
+      s.to_i
     end
   end
 
   def get_input
     print "Choose your move: "
     square = number_or_nil gets
-    puts square
-    while !is_valid_move?(square)
-      puts "Invalid move! Please choose an open square."
-      square = number_or_nil gets
+    while true
+      if square && is_valid_move?(square)
+        break
+      else
+        puts "That's not a valid square! Try again."
+        print "Choose your move: "
+        square = number_or_nil gets
+      end
     end
     @board[square] = "X"
+    @player_x << square
+  end
+
+  def get_computer_input
+    square = rand(8)
+    while true
+      if square && is_valid_move?(square)
+        break
+      else
+        square = rand(8)
+      end
+    end
+    @board[square] = "O"
+    @player_o << square
   end
 
   def round
     puts "Welcome to Tic-Tac-Toe! You are player X, and you go first."
     print_board
-    get_input
-    print_board
+    while true
+      get_input
+      print_board
+      if is_winner?(@player_x)
+        puts "You won!"
+        break
+      elsif is_a_tie?()
+        puts "Tie!"
+        break
+      end
+
+      puts "Now for the computer to move..."
+      gets.chomp
+
+      get_computer_input
+      print_board
+      if is_winner?(@player_o)
+        puts "You lost!"
+        break
+      elsif is_a_tie?()
+        puts "Tie!"
+        break
+      end
+    end
   end
 end
 
