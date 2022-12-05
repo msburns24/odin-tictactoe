@@ -48,11 +48,31 @@ class Game
     print "\n\n"
   end
 
+  def number_or_nil(s)
+    num = s.to_i
+    if num.to_s == s
+      num
+    else
+      nil
+    end
+  end
+
+  def get_input
+    print "Choose your move: "
+    square = number_or_nil gets
+    puts square
+    while !is_valid_move?(square)
+      puts "Invalid move! Please choose an open square."
+      square = number_or_nil gets
+    end
+    @board[square] = "X"
+  end
+
   def round
     puts "Welcome to Tic-Tac-Toe! You are player X, and you go first."
-    
-    while true
-    end
+    print_board
+    get_input
+    print_board
   end
 end
 
@@ -61,8 +81,7 @@ end
 # Test Area #
 #############
 
+
 x = Game.new()
 
-(0..8).each do |i| 
-  p x.is_valid_move?(i)
-end
+x.round
